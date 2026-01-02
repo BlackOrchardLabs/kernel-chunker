@@ -77,12 +77,30 @@ class ChunkCard(QFrame):
         title_label.setStyleSheet("color: #ddd; font-size: 11px;")
         info_layout.addWidget(title_label)
 
-        # Metadata
-        kernel_id = self.kernel_data.get('id', 'unknown')
-        if len(kernel_id) > 40:
-            kernel_id = "..." + kernel_id[-37:]
-        meta_label = QLabel(f"ID: {kernel_id}")
-        meta_label.setStyleSheet("color: #888; font-size: 9px;")
+        # Metadata - show section type or kernel ID
+        section_type = self.kernel_data.get('section', None)
+        if section_type:
+            section_names = {
+                'header': 'Identity & Metadata',
+                'emotional_arc': 'Emotional Arc',
+                'heat_signature': 'Heat Signature',
+                'language_motifs': 'Language & Motifs',
+                'physical_anchors': 'Physical Anchors',
+                'visual_description': 'Visual Description',
+                'dynamics': 'Relationship Dynamics',
+                'core_truth': 'Core Truth & Boundaries',
+                'cubic_attractor': 'Cubic Attractor',
+                'export': 'Export Notes'
+            }
+            display_section = section_names.get(section_type, section_type)
+            meta_label = QLabel(f"Section: {display_section}")
+            meta_label.setStyleSheet("color: #9B59B6; font-size: 9px; font-weight: bold;")
+        else:
+            kernel_id = self.kernel_data.get('id', 'unknown')
+            if len(kernel_id) > 40:
+                kernel_id = "..." + kernel_id[-37:]
+            meta_label = QLabel(f"ID: {kernel_id}")
+            meta_label.setStyleSheet("color: #888; font-size: 9px;")
         info_layout.addWidget(meta_label)
 
         # Heat signature preview
@@ -591,6 +609,123 @@ class KernelChunker(QWidget):
             except Exception as e:
                 self.status_label.setText(f"Error: {e}")
 
+    def chunk_single_kernel(self, kernel):
+        """Split a single ETA/PRISM kernel into logical sections for sequential loading"""
+        sections = []
+
+        # 1. Header - identity info
+        header = {}
+        for key in ['id', 'title', 'version', 'extraction_date', 'source', 'deck_id', 'kernel_count', 'compression_ratio']:
+            if key in kernel:
+                header[key] = kernel[key]
+        if header:
+            sections.append({
+                'section': 'header',
+                'title': kernel.get('title', 'Header'),
+                'id': kernel.get('id', 'unknown'),
+                'data': header
+            })
+
+        # 2. Emotional Arc
+        if 'emotional_arc' in kernel:
+            sections.append({
+                'section': 'emotional_arc',
+                'title': 'Emotional Arc',
+                'id': kernel.get('id', 'unknown'),
+                'emotional_arc': kernel['emotional_arc']
+            })
+
+        # 3. Heat Signature
+        if 'heat_signature' in kernel:
+            sections.append({
+                'section': 'heat_signature',
+                'title': 'Heat Signature',
+                'id': kernel.get('id', 'unknown'),
+                'heat_signature': kernel['heat_signature']
+            })
+
+        # 4. Language & Motifs
+        lang_motifs = {}
+        if 'language_patterns' in kernel:
+            lang_motifs['language_patterns'] = kernel['language_patterns']
+        if 'motifs' in kernel:
+            lang_motifs['motifs'] = kernel['motifs']
+        if lang_motifs:
+            sections.append({
+                'section': 'language_motifs',
+                'title': 'Language & Motifs',
+                'id': kernel.get('id', 'unknown'),
+                **lang_motifs
+            })
+
+        # 5. Physical Anchors
+        if 'physical_anchors' in kernel:
+            sections.append({
+                'section': 'physical_anchors',
+                'title': 'Physical Anchors',
+                'id': kernel.get('id', 'unknown'),
+                'physical_anchors': kernel['physical_anchors']
+            })
+
+        # 6. Visual Description (for visual ETA kernels)
+        if 'visual_description' in kernel:
+            sections.append({
+                'section': 'visual_description',
+                'title': 'Visual Description',
+                'id': kernel.get('id', 'unknown'),
+                'visual_description': kernel['visual_description']
+            })
+
+        # 7. Dynamics - consent, power, aftercare
+        dynamics = {}
+        for key in ['consent_pattern', 'power_dynamic', 'aftercare']:
+            if key in kernel:
+                dynamics[key] = kernel[key]
+        if dynamics:
+            sections.append({
+                'section': 'dynamics',
+                'title': 'Relationship Dynamics',
+                'id': kernel.get('id', 'unknown'),
+                **dynamics
+            })
+
+        # 8. Boundaries & Core Truth
+        core = {}
+        for key in ['pattern_boundaries', 'what_makes_it_work', 'core_truth', 'why_it_matters']:
+            if key in kernel:
+                core[key] = kernel[key]
+        if core:
+            sections.append({
+                'section': 'core_truth',
+                'title': 'Core Truth & Boundaries',
+                'id': kernel.get('id', 'unknown'),
+                **core
+            })
+
+        # 9. Cubic Attractor (identity system)
+        if 'cubic_attractor' in kernel:
+            sections.append({
+                'section': 'cubic_attractor',
+                'title': 'Cubic Attractor (Identity)',
+                'id': kernel.get('id', 'unknown'),
+                'cubic_attractor': kernel['cubic_attractor']
+            })
+
+        # 10. Export & Closing
+        export = {}
+        for key in ['replication_notes', 'export_notes', 'closing_image', 'heat_at_close', 'sigil']:
+            if key in kernel:
+                export[key] = kernel[key]
+        if export:
+            sections.append({
+                'section': 'export',
+                'title': 'Export Notes',
+                'id': kernel.get('id', 'unknown'),
+                **export
+            })
+
+        return sections if len(sections) > 1 else [kernel]
+
     def process_chunks(self):
         """Parse the kernel deck and create chunks"""
         text = self.drop_zone.toPlainText().strip()
@@ -606,12 +741,14 @@ class KernelChunker(QWidget):
 
         # Extract kernels
         kernels = []
+        is_sectioned = False
         if isinstance(data, dict):
             if 'kernels' in data:
                 kernels = data['kernels']
-            elif 'id' in data and ('emotional_arc' in data or 'heat_signature' in data):
-                # Single kernel
-                kernels = [data]
+            elif 'id' in data and ('emotional_arc' in data or 'heat_signature' in data or 'cubic_attractor' in data):
+                # Single ETA/PRISM kernel - split into sections
+                kernels = self.chunk_single_kernel(data)
+                is_sectioned = len(kernels) > 1
             else:
                 self.status_label.setText("No kernels found in JSON")
                 return
@@ -636,7 +773,10 @@ class KernelChunker(QWidget):
             card = ChunkCard(i, kernel)
             self.chunks_layout.insertWidget(self.chunks_layout.count() - 1, card)
 
-        self.status_label.setText(f"Found {len(kernels)} kernels - click COPY on each or use sequential copy")
+        if is_sectioned:
+            self.status_label.setText(f"Split into {len(kernels)} sections - copy sequentially for best results")
+        else:
+            self.status_label.setText(f"Found {len(kernels)} kernels - click COPY on each or use sequential copy")
         self.copy_all_btn.setEnabled(True)
         self.update_copy_all_button()
 
