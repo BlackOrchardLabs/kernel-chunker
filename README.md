@@ -39,7 +39,7 @@ python kernel_chunker.pyw
 
 ```bash
 # Windows (PowerShell)
-.\build_exe.ps1
+.uild_exe.ps1
 
 # Windows (Command Prompt)
 build_exe.bat
@@ -63,14 +63,14 @@ Kernel Chunker accepts PRISM kernel deck JSON in these formats:
 {
   "kernels": [
     {
-      "id": "kernel-001",
-      "title": "Memory Title",
-      "heat_signature": {
-        "tenderness": 0.8,
-        "trust": 0.9,
-        "erotic_charge": 0.3
+      "id": "<kernel_id>",
+      "title": "<title>",
+      "metadata": {
+        "field_1": "<value>",
+        "field_2": "<value>",
+        "field_3": "<value>"
       },
-      "emotional_arc": { ... }
+      "content": { ... }
     }
   ]
 }
@@ -80,8 +80,8 @@ Or a simple array of kernels:
 
 ```json
 [
-  { "id": "kernel-001", "title": "...", ... },
-  { "id": "kernel-002", "title": "...", ... }
+  { "id": "<kernel_id>", "title": "<title>", ... },
+  { "id": "<kernel_id>", "title": "<title>", ... }
 ]
 ```
 
