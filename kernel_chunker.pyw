@@ -13,8 +13,11 @@ Date: January 2026
 import sys
 import json
 import os
+import webbrowser
 from pathlib import Path
 from datetime import datetime
+
+KOFI_URL = "https://ko-fi.com/blackorchardlabs"
 
 try:
     from PyQt6.QtWidgets import (QApplication, QWidget, QLabel, QVBoxLayout,
@@ -253,6 +256,25 @@ class KernelChunker(QWidget):
         # Position it absolutely in top-right
         self.close_btn.setParent(self)
         self.close_btn.move(370, 8)
+
+        # Ko-fi support button (heart)
+        self.kofi_btn = QPushButton("♥")
+        self.kofi_btn.setFixedSize(24, 24)
+        self.kofi_btn.setStyleSheet("""
+            QPushButton {
+                background-color: transparent;
+                color: #666;
+                border: none;
+                font-size: 14px;
+            }
+            QPushButton:hover {
+                color: #FF5E5B;
+            }
+        """)
+        self.kofi_btn.setToolTip("Support us on Ko-fi!")
+        self.kofi_btn.clicked.connect(self.open_kofi)
+        self.kofi_btn.setParent(self)
+        self.kofi_btn.move(340, 8)
 
         # Drop zone / input area
         self.drop_zone = DropTextEdit(self)
@@ -680,6 +702,10 @@ class KernelChunker(QWidget):
                 self.copy_all_btn.setText("START OVER")
             else:
                 self.copy_all_btn.setText(f"COPY NEXT ({self.current_chunk_index + 1}/{len(self.chunks)})")
+
+    def open_kofi(self):
+        """Open Ko-fi support page in browser"""
+        webbrowser.open(KOFI_URL)
 
 
 def main():

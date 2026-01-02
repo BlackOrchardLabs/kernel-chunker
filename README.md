@@ -5,6 +5,7 @@ A retro-industrial desktop tool for splitting large PRISM kernel decks into dige
 ![Black Orchard Labs](https://img.shields.io/badge/Black%20Orchard-Labs-orange)
 ![Python 3.10+](https://img.shields.io/badge/Python-3.10+-blue)
 ![PyQt6](https://img.shields.io/badge/PyQt6-GUI-green)
+[![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Us-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/blackorchardlabs)
 
 ## Overview
 
@@ -99,6 +100,10 @@ kernel_chunker/
 - Python 3.10+
 - PyQt6
 - PyInstaller (for building executable)
+
+## Support
+
+If you find this tool useful, consider [buying us a coffee](https://ko-fi.com/blackorchardlabs)!
 
 ## License
 
