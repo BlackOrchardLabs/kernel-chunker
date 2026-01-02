@@ -7,6 +7,8 @@ A retro-industrial desktop tool for splitting large PRISM kernel decks into dige
 ![PyQt6](https://img.shields.io/badge/PyQt6-GUI-green)
 [![Ko-fi](https://img.shields.io/badge/Ko--fi-Support%20Us-ff5e5b?logo=ko-fi&logoColor=white)](https://ko-fi.com/blackorchardlabs)
 
+![Kernel Chunker Screenshot](screenshot.png)
+
 ## Overview
 
 Large kernel decks can overwhelm LLM context windows, causing the "lost in the middle" problem where models only attend to the first and last items. Kernel Chunker solves this by letting you feed kernels one at a time.
