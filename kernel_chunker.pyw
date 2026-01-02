@@ -283,7 +283,7 @@ class KernelChunker(QWidget):
                 background-color: transparent;
                 color: #666;
                 border: none;
-                font-size: 14px;
+                font-size: 20px;
             }
             QPushButton:hover {
                 color: #FF5E5B;
