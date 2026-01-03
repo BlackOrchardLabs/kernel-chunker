@@ -16,9 +16,9 @@ Large kernel decks can overwhelm LLM context windows, causing the "lost in the m
 ## Features
 
 - **Retro-Industrial UI** - Matches the PyPulse aesthetic with weathered metal textures, rivets, and embossed text
-- **Drag & Drop** - Drop kernel deck JSON files directly onto the window
-- **File Browser** - LOAD button opens a file picker
+- **File Browser** - LOAD button opens a file picker (recommended)
 - **Paste Support** - Paste JSON directly into the input area
+- **Drag & Drop** - Experimental; may not work reliably on all systems
 - **Sequential Copy** - COPY NEXT button walks through kernels one by one
 - **Visual Feedback** - Copied chunks grey out until you start over
 - **Individual Copy** - Each chunk card has its own COPY button
@@ -49,7 +49,7 @@ The executable will be created in the `dist/` folder.
 
 ## Usage
 
-1. **Load a kernel deck** - Drag a `.json` file onto the window, click LOAD, or paste JSON directly
+1. **Load a kernel deck** - Click LOAD to open a file picker, or paste JSON directly
 2. **Click CHUNK** - Parses the JSON and displays individual kernel cards
 3. **Copy kernels** - Click COPY on individual cards, or use COPY NEXT for sequential copying
 4. **Paste to Mika** - Each kernel is copied as valid JSON ready to paste
